@@ -38,7 +38,7 @@ public class Client extends Application {
         primaryStage.show();
         new Thread(this::recieverThread, "Client Listener Thread").start();
         primaryStage.addEventHandler(WindowEvent.WINDOW_CLOSE_REQUEST, evt -> {
-            running = false;
+            System.exit(0);
         });
     }
 
@@ -91,11 +91,13 @@ public class Client extends Application {
     }
 
     private void recieverThread() {
-        while (running) {
+        System.out.println("Starting client response loop");
+        while (true) {
             try {
                 inboundMessages.add(receiver.get().getData());
             } catch (Exception e) {
                 e.printStackTrace();
+                break;
             }
         }
     }
