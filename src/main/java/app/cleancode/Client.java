@@ -1,6 +1,9 @@
 package app.cleancode;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -12,6 +15,8 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 public class Client extends Application {
+    private Queue<byte[]> inboundMessages = new ConcurrentLinkedQueue<>();
+
     public static void main(String[] args) {
         launch(args);
     }
@@ -27,6 +32,7 @@ public class Client extends Application {
         primaryStage.setScene(new Scene(root));
         createScene();
         primaryStage.show();
+        new Thread(this::recieverThread, "Client Listener Thread").start();
     }
 
     public void createScene() {
@@ -62,6 +68,26 @@ public class Client extends Application {
                 e.printStackTrace();
             }
         });
+        AnimationTimer messageReader = new AnimationTimer() {
+
+            @Override
+            public void handle(long now) {
+                if (!inboundMessages.isEmpty()) {
+                    messages.setText(String.format("%s\n%s", messages.getText(),
+                            new String(inboundMessages.poll())));
+                }
+            }
+        };
+    }
+
+    private void recieverThread() {
+        while (true) {
+            try {
+                inboundMessages.add(socket.get("0.0.0.0", 3802));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 }

@@ -21,6 +21,13 @@ public class Socket implements AutoCloseable {
         socket.send(packet);
     }
 
+    public byte[] get(String ip, int port) throws Exception {
+        DatagramPacket packet =
+                new DatagramPacket(new byte[512], 500, InetAddress.getByName(ip), port);
+        socket.receive(packet);
+        return packet.getData();
+    }
+
     @Override
     public void close() throws Exception {
         socket.close();
