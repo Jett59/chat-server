@@ -1,27 +1,32 @@
 package app.cleancode;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.nio.charset.StandardCharsets;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Server {
     public static void main(String[] args) {
         new Server().begin();
     }
 
-    private Socket socket = new Socket();
-    private Map<String, Integer> clients = new HashMap<>();
+    private Socket socket = new Socket(3801);
+    private Set<String> clients = new HashSet<>();
 
     public void begin() {
         while (true) {
             try {
-                var packet = socket.get("0.0.0.0", 3801);
-                if (!clients.containsKey(packet.getAddress().getHostAddress())) {
-                    clients.put(packet.getAddress().getHostAddress(), packet.getPort());
+                System.out.println("About to check for packets");
+                var packet = socket.get();
+                if (!clients.contains(packet.getAddress().getHostAddress())) {
+                    clients.add(packet.getAddress().getHostAddress());
                 }
                 byte[] message = packet.getData();
-                clients.forEach((host, port) -> {
+                System.out.printf("Message from %s: %s\n", packet.getAddress().getHostAddress(),
+                        new String(message, StandardCharsets.UTF_8));
+                clients.forEach(host -> {
                     try {
-                        socket.post(message, host, port);
+                        System.out.println("Sending message to " + host);
+                        socket.post(message, host, 3802);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

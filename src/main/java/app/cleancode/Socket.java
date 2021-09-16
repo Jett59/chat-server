@@ -15,15 +15,22 @@ public class Socket implements AutoCloseable {
         }
     }
 
+    public Socket(int port) {
+        try {
+            socket = new DatagramSocket(port);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public void post(byte[] message, String ip, int port) throws Exception {
         DatagramPacket packet =
                 new DatagramPacket(message, message.length, InetAddress.getByName(ip), port);
         socket.send(packet);
     }
 
-    public DatagramPacket get(String ip, int port) throws Exception {
-        DatagramPacket packet =
-                new DatagramPacket(new byte[512], 500, InetAddress.getByName(ip), port);
+    public DatagramPacket get() throws Exception {
+        DatagramPacket packet = new DatagramPacket(new byte[512], 500);
         socket.receive(packet);
         return packet;
     }

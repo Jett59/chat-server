@@ -23,6 +23,7 @@ public class Client extends Application {
 
     private final GridPane root = new GridPane();
     private Socket socket = new Socket();
+    private Socket receiver = new Socket(3802);
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -80,12 +81,13 @@ public class Client extends Application {
                 }
             }
         };
+        messageReader.start();
     }
 
     private void recieverThread() {
         while (true) {
             try {
-                inboundMessages.add(socket.get("0.0.0.0", 3802).getData());
+                inboundMessages.add(receiver.get().getData());
             } catch (Exception e) {
                 e.printStackTrace();
             }
