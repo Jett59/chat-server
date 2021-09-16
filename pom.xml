@@ -8,4 +8,17 @@
   <maven.compiler.target>16</maven.compiler.target>
   <maven.compiler.source>16</maven.compiler.source>
   </properties>
+  
+  <dependencies>
+  <dependency>
+  <groupId>org.openjfx</groupId>
+  <artifactId>javafx-graphics</artifactId>
+  <version>16</version>
+  </dependency>
+  <dependency>
+  <groupId>org.openjfx</groupId>
+  <artifactId>javafx-controls</artifactId>
+  <version>16</version>
+  </dependency>
+  </dependencies>
 </project>
