@@ -13,6 +13,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 public class Client extends Application {
     private Queue<byte[]> inboundMessages = new ConcurrentLinkedQueue<>();
@@ -25,6 +26,8 @@ public class Client extends Application {
     private Socket socket = new Socket();
     private Socket receiver = new Socket(3802);
 
+    private boolean running = true;
+
     @Override
     public void start(Stage primaryStage) throws Exception {
         primaryStage.setTitle("Chat server");
@@ -34,6 +37,9 @@ public class Client extends Application {
         createScene();
         primaryStage.show();
         new Thread(this::recieverThread, "Client Listener Thread").start();
+        primaryStage.addEventHandler(WindowEvent.WINDOW_CLOSE_REQUEST, evt -> {
+            running = false;
+        });
     }
 
     public void createScene() {
@@ -85,7 +91,7 @@ public class Client extends Application {
     }
 
     private void recieverThread() {
-        while (true) {
+        while (running) {
             try {
                 inboundMessages.add(receiver.get().getData());
             } catch (Exception e) {
