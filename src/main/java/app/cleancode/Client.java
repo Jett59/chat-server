@@ -64,6 +64,8 @@ public class Client extends Application {
         send.setOnAction(evt -> {
             try {
                 socket.post(message.getText().getBytes(StandardCharsets.UTF_8), ip.getText(), 3801);
+                message.setText("");
+                message.requestFocus();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -83,7 +85,7 @@ public class Client extends Application {
     private void recieverThread() {
         while (true) {
             try {
-                inboundMessages.add(socket.get("0.0.0.0", 3802));
+                inboundMessages.add(socket.get("0.0.0.0", 3802).getData());
             } catch (Exception e) {
                 e.printStackTrace();
             }
