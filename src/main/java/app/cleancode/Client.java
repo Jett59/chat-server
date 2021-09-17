@@ -26,8 +26,6 @@ public class Client extends Application {
     private Socket socket = new Socket();
     private Socket receiver = new Socket(3802);
 
-    private boolean running = true;
-
     @Override
     public void start(Stage primaryStage) throws Exception {
         primaryStage.setTitle("Chat server");
